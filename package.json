@@ -1,0 +1,29 @@
+{
+  "name": "React-Kanban",
+  "version": "1.0.0",
+  "description": "> A digital Kanban board made with React",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/KaleoAnguay/React-Kanban.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/KaleoAnguay/React-Kanban/issues"
+  },
+  "homepage": "https://github.com/KaleoAnguay/React-Kanban#readme",
+  "dependencies": {
+    "body-parser": "^1.17.1",
+    "express-handlebars": "^3.0.0"
+  },
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-connect": "^5.0.0",
+    "gulp-sass": "^3.1.0"
+  }
+}
