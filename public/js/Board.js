@@ -1,14 +1,43 @@
 const boardContainer = document.getElementById("main");
 
-
+const getCardsFromFakeDB = () => new Promise((resolve,reject) => {
+  const cardsFromFakeDB = [
+    {
+      title: 'Build Computer',
+      priority: 'Medium',
+      status: 'To Do',
+      created_by: 'Kaleo Anguay',
+      assigned_to: 'Tony Do'
+    },
+    {
+      title: 'Eat dinner',
+      priority: 'High',
+      status: 'Done',
+      created_by: 'Kaleo Anguay',
+      assigned_to: 'Everyone'
+    },
+    {
+      title: 'Watch video',
+      priority: 'Low',
+      status: 'Doing',
+      created_by: 'Kaleo Anguay',
+      assigned_to: 'Kaleo Anguay'
+    }
+  ];
+  resolve(cardsFromFakeDB);
+})
 const Card = (props) => (
   <div className = "card">
-    <h3>{ props.card.title }</h3>
-    <p>{ props.card.priority }</p>
-    <p>{ props.card.created_by }</p>
-    <p>{ props.card.assigned_to }</p>
+    <h3> Task: { props.card.title }</h3>
+    <p> Status: { props.card.status} </p>
+    <p> Priority: { props.card.priority }</p>
+    <p> Created By: { props.card.created_by }</p>
+    <p> Assigned to :{ props.card.assigned_to }</p>
   </div>
 );
+console.log(Card)
+
+
 
 const CardList = ({ cards }) => (
   <ul>
@@ -18,18 +47,55 @@ const CardList = ({ cards }) => (
   </ul>
 );
 
-// class List extends React.Component {
-//   Card() {
-//     if(this.props.priority === 'To D')
-//   }
-// }
+// to do search
+const ToDoSearch = filter => ({ status }) =>
+  status === 'To Do';
+
+//to do list
+const ToDoList = ({ cards, filter }) => (
+   <ul>
+   {cards
+      .filter(ToDoSearch())
+      .map( card => <Card card={card} />)
+   }
+   </ul>
+);
+
+//done search
+const DoneSearch = filter => ({ status }) =>
+  status === 'Done';
+
+// done list
+const DoneList = ({ cards, filter }) => (
+  <ul>
+  {cards
+    .filter(DoneSearch())
+    .map( card => <Card card={card} />)
+  }
+  </ul>
+)
+
+//doing search
+const DoingSearch = filter => ({ status }) =>
+  status === 'Doing';
+
+//doing list
+const DoingList = ({ cards, filter }) => (
+  <ul>
+  {cards
+    .filter(DoingSearch())
+    .map( card => <Card card={card} />)
+  }
+  </ul>
+)
 
 class Done extends React.Component {
   render(){
     return (
         <div>
           <div className="done">
-            <p>Done</p>
+            <h1>Done</h1>
+            <DoneList cards={this.props.cards}></DoneList>
           </div>
         </div>
 
@@ -38,31 +104,35 @@ class Done extends React.Component {
 }
 
 class Doing extends React.Component {
+  constructor(props) {
+    super(props);
+
+  };
   render(){
     return (
-        <div>
-          <div className="doing">
-            <p>Doing</p>
-          </div>
+      <div>
+        <div className="doing">
+          <h1>Doing</h1>
+          <DoingList cards={this.props.cards}></DoingList>
         </div>
+      </div>
     )
   }
 }
 
-class Queue extends React.Component {
+class ToDo extends React.Component {
   constructor(props){
     super(props);
 
     };
-
   render(){
     return (
-        <div>
-          <div className="queue">
-            <p>To Do</p>
-            <CardList cards={this.props.cards}></CardList>
-          </div>
+      <div>
+        <div className="toDo">
+          <h1>To Do</h1>
+          <ToDoList cards={this.props.cards}></ToDoList>
         </div>
+      </div>
     )
   }
 }
@@ -70,17 +140,18 @@ class Queue extends React.Component {
 class NewCard extends React.Component{
   constructor(props){
     super(props);
+    console.log(constructor)
 
     // set the initial state
     this.state = {
       title: '',
-      status: '',
       priority: '',
       created_by: '',
       assigned_to: ''
     };
 
     this.handleTitleChange = this.handleTitleChange.bind(this);
+    this.handleStatusChange = this.handleStatusChange.bind(this);
     this.handlePriorityChange = this.handlePriorityChange.bind(this);
     this.handleCreatedByChange = this.handleCreatedByChange.bind(this);
     this.handleAssignedToChange = this.handleAssignedToChange.bind(this);
@@ -92,14 +163,16 @@ class NewCard extends React.Component{
     this.props.addCard(card);
 
     const title = '';
+    const status = '';
     const priority = '';
-    const created_by = '';
-    const assigned_to = '';
+    const createdBy = '';
+    const assignedTo = '';
     this.setState({
       title,
+      status,
       priority,
-      created_by,
-      assigned_to
+      createdBy,
+      assignedTo
     });
   }
 
@@ -110,6 +183,10 @@ class NewCard extends React.Component{
 
   handleTitleChange(event) {
     this.setState({ title : event.target.value });
+  }
+
+  handleStatusChange(event) {
+    this.setState({ status: event.target.value});
   }
 
   handlePriorityChange(event) {
@@ -126,21 +203,31 @@ class NewCard extends React.Component{
 
   render(){
     return (
-      <form onSubmit={this.handleSubmit}>
+      <form id='submit' onSubmit={this.handleSubmit}>
         <div>
-          <input type="text" placeholder="title" onChange={this.handleTitleChange} value={this.state.title} />
+          <input type='text' placeholder='title' onChange={this.handleTitleChange} value={this.state.title} />
+        </div>
+
+        <div>
+          <input type='text' placeholder='created by' onChange={this.handleCreatedByChange} value={this.state.created_by} />
         </div>
         <div>
-          <input type="text" placeholder="priority" onChange={this.handlePriorityChange} value={this.state.priority} />
+          <input type='text' placeholder='assigned to' onChange={this.handleAssignedToChange} value={this.state.assigned_to} />
+        </div>
+
+        <div> Priority of Task: <br />
+          <input type='radio' placeholder='priority' name='priority' onChange={this.handlePriorityChange} value='Low' /> Low <br/>
+          <input type='radio' placeholder='priority' name='priority' onChange={this.handlePriorityChange} value='Medium' /> Medium <br/>
+          <input type='radio' placeholder='priority' name='priority' onChange={this.handlePriorityChange} value='High' /> High <br/>
+        </div>
+
+        <div> Status of Task: <br />
+        <input type='radio' placeholder='status' name='status' onChange={this.handleStatusChange} value='To Do'/> To Do <br/>
+        <input type='radio' placeholder='status' name='status' onChange={this.handleStatusChange} value='Doing'/> Doing <br/>
+        <input type='radio' placeholder='status' name='status' onChange={this.handleStatusChange} value='Done'/> Done <br/>
         </div>
         <div>
-          <input type="text" placeholder="created by" onChange={this.handleCreatedByChange} value={this.state.created_by} />
-        </div>
-        <div>
-          <input type="text" placeholder="assigned to" onChange={this.handleAssignedToChange} value={this.state.assigned_to} />
-        </div>
-        <div>
-          <button type="submit">Add Card</button>
+          <button type='submit'>Add Card</button>
         </div>
       </form>
     )
@@ -157,10 +244,28 @@ class App extends React.Component{
 
     this.state = {
       cards : [],
-      todo : []
+      todo : [],
+      doing : [],
+      done: []
     };
 
     this.addCard = this.addCard.bind(this);
+    console.log(this);
+  }
+
+  componentWillMount() {
+    this.getBCard()
+    .then( cards => {
+      this.setState({ cards });
+    })
+  }
+  getBCard(){
+    return getCardsFromFakeDB();
+  }
+
+  Filter(e) {
+    console.log(e.target.value);
+    this.setState({ filter: e.target.value });
   }
 
   addCard(card){
@@ -169,14 +274,18 @@ class App extends React.Component{
     });
   }
 
+
+
   render(){
     return (
-      <div>
+      <div id='board'>
         <h1>My Board</h1>
         <NewCard addCard={this.addCard}/>
-        <Queue cards={this.state.cards} />
-        <Doing cards={this.state.cards}/>
-        <Done cards={this.state.cards}/>
+        <div className='list'>
+          <ToDo cards={this.state.cards} />
+          <Doing cards={this.state.cards}/>
+          <Done cards={this.state.cards}/>
+        </div>
       </div>
     );
   }

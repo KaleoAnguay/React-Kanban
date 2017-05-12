@@ -1,0 +1,21 @@
+.list{
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-around;
+}
+#submit {
+  width: 20%;
+  margin: 0 auto;
+}
+
+.toDo {
+  background: green;
+}
+
+.doing{
+  background: red;
+}
+
+.done{
+  background: lightblue;
+}
